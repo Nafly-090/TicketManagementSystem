@@ -9,7 +9,6 @@ const TicketList = () => {
   const { tickets, pagination, isLoading } = useSelector((state) => state.tickets);
   const { user } = useSelector((state) => state.auth);
 
-  // Filter States
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [priority, setPriority] = useState('');
@@ -61,8 +60,6 @@ const TicketList = () => {
         )}
       </div>
 
-      {/* Advanced Filter Layout */}
-      {/* Advanced Filter Layout with Sorting */}
       <div className="p-6 bg-white rounded-xl border border-gray-100 shadow-xs flex flex-col md:flex-row gap-4 items-end">
         <div className="flex-1 w-full space-y-2">
           <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Search</label>
@@ -126,7 +123,6 @@ const TicketList = () => {
           </select>
         </div>
 
-        {/* Added: Sorting dropdown which resolves both 'SlidersHorizontal' and 'setSort' warnings */}
         <div className="w-full md:w-44 space-y-2">
           <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
             <SlidersHorizontal size={13} className="text-gray-400" /> Sort By
@@ -144,7 +140,6 @@ const TicketList = () => {
         </div>
       </div>
 
-      {/* Ticket Table Display */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-8 text-center text-gray-600 font-medium">Loading tickets...</div>
@@ -196,7 +191,6 @@ const TicketList = () => {
           </div>
         )}
 
-        {/* Footer Pagination Controls */}
         <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
           <p className="text-xs text-gray-500 font-medium">
             Showing Page {pagination.page} of {pagination.totalPages || 1} ({pagination.total} total)

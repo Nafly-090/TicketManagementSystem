@@ -4,12 +4,13 @@ import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './layouts/DashboardLayout';
 
-// Real Functional Components
 import Dashboard from './pages/Dashboard';
 import TicketList from './pages/TicketList';
 import CreateTicket from './pages/CreateTicket';
 import TicketDetails from './pages/TicketDetails';
 import UserManagement from './pages/UserManagement';
+import EditTicket from './pages/EditTicket';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         {/* Public Authentication Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/" element={<LandingPage />} />
 
         {/* Private Authenticated Routes */}
         <Route element={<ProtectedRoute />}>
@@ -35,6 +37,9 @@ function App() {
 
             {/* Ticket Details — All Roles */}
             <Route path="/tickets/:id" element={<TicketDetails />} />
+
+            {/* Edit Ticket — Creator or Admin only */} 
+            <Route path="/tickets/:id/edit" element={<EditTicket />} />
 
             {/* Admin-Only User Management Screen */}
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

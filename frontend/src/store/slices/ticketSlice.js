@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axios';
 
-// 1. Fetch Dashboard Stats
 export const fetchStats = createAsyncThunk('tickets/fetchStats', async (_, thunkAPI) => {
   try {
     const response = await API.get('/tickets/stats');
@@ -11,7 +10,6 @@ export const fetchStats = createAsyncThunk('tickets/fetchStats', async (_, thunk
   }
 });
 
-// 2. Fetch Ticket List with search, filtering, and pagination
 export const fetchTickets = createAsyncThunk('tickets/fetchTickets', async (queryParams = {}, thunkAPI) => {
   try {
     const response = await API.get('/tickets', { params: queryParams });
@@ -21,7 +19,6 @@ export const fetchTickets = createAsyncThunk('tickets/fetchTickets', async (quer
   }
 });
 
-// 3. Fetch Single Ticket Details
 export const fetchTicketDetails = createAsyncThunk('tickets/fetchTicketDetails', async (ticketId, thunkAPI) => {
   try {
     const response = await API.get(`/tickets/${ticketId}`);
@@ -31,7 +28,6 @@ export const fetchTicketDetails = createAsyncThunk('tickets/fetchTicketDetails',
   }
 });
 
-// 4. Create New Ticket
 export const createTicket = createAsyncThunk('tickets/createTicket', async (ticketData, thunkAPI) => {
   try {
     const response = await API.post('/tickets', ticketData);
@@ -41,7 +37,6 @@ export const createTicket = createAsyncThunk('tickets/createTicket', async (tick
   }
 });
 
-// 5. Update Ticket Status
 export const updateTicketStatus = createAsyncThunk('tickets/updateTicketStatus', async ({ id, status }, thunkAPI) => {
   try {
     const response = await API.patch(`/tickets/${id}/status`, { status });
@@ -51,7 +46,6 @@ export const updateTicketStatus = createAsyncThunk('tickets/updateTicketStatus',
   }
 });
 
-// 6. Assign Ticket
 export const assignTicket = createAsyncThunk('tickets/assignTicket', async ({ id, agentId }, thunkAPI) => {
   try {
     const response = await API.patch(`/tickets/${id}/assign`, { agentId });
@@ -61,13 +55,30 @@ export const assignTicket = createAsyncThunk('tickets/assignTicket', async ({ id
   }
 });
 
-// 7. Add Comment
 export const addComment = createAsyncThunk('tickets/addComment', async ({ id, text }, thunkAPI) => {
   try {
     const response = await API.post(`/tickets/${id}/comments`, { text });
     return response.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to post comment');
+  }
+});
+
+export const updateTicket = createAsyncThunk('tickets/updateTicket', async ({ id, ticketData }, thunkAPI) => {
+  try {
+    const response = await API.put(`/tickets/${id}`, ticketData);
+    return response.data.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to update ticket');
+  }
+});
+
+export const deleteTicket = createAsyncThunk('tickets/deleteTicket', async (id, thunkAPI) => {
+  try {
+    const response = await API.delete(`/tickets/${id}`);
+    return response.data.data; // Returns { id: "ticket_id_deleted" }
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to delete ticket');
   }
 });
 
@@ -95,31 +106,33 @@ const ticketSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // 1. ALL addCase() CALLS MUST BE DEFINED FIRST
-      // Stats Fulfilled
       .addCase(fetchStats.fulfilled, (state, action) => {
         state.isLoading = false;
         state.stats = action.payload;
       })
-      // List Fulfilled
       .addCase(fetchTickets.fulfilled, (state, action) => {
         state.isLoading = false;
         state.tickets = action.payload.tickets;
         state.pagination = action.payload.pagination;
       })
-      // Details Fulfilled
       .addCase(fetchTicketDetails.fulfilled, (state, action) => {
         state.isLoading = false;
         state.ticketDetails = action.payload;
       })
-      // Create Fulfilled
       .addCase(createTicket.fulfilled, (state, action) => {
         state.isLoading = false;
         state.tickets.unshift(action.payload);
       })
+      .addCase(updateTicket.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.ticketDetails = action.payload;
+      })
+      .addCase(deleteTicket.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.tickets = state.tickets.filter((t) => t._id !== action.payload.id);
+        state.ticketDetails = null;
+      })
 
-      // 2. ALL addMatcher() CALLS DEFINED SECOND
-      // General Pending Handler
       .addMatcher(
         (action) => action.type.endsWith('/pending'),
         (state) => {
@@ -127,7 +140,6 @@ const ticketSlice = createSlice({
           state.isError = false;
         }
       )
-      // General Rejected Handler
       .addMatcher(
         (action) => action.type.endsWith('/rejected'),
         (state, action) => {
@@ -136,7 +148,6 @@ const ticketSlice = createSlice({
           state.message = action.payload;
         }
       )
-      // Status, Assign, Comment Fulfilled (Updates ticketDetails inside memory directly)
       .addMatcher(
         (action) =>
           action.type === updateTicketStatus.fulfilled.type ||

@@ -6,11 +6,11 @@ import {
   updateTicketStatus, 
   assignTicket, 
   addComment, 
-  clearDetails 
+  clearDetails,
+  deleteTicket
 } from '../store/slices/ticketSlice';
 import { fetchAllUsers } from '../store/slices/userSlice';
-import { ArrowLeft, MessageSquare, Clock, ShieldAlert, User, CheckCircle } from 'lucide-react';
-
+import { ArrowLeft, MessageSquare, Clock, ShieldAlert, User, CheckCircle, Edit2, Trash2 } from 'lucide-react'; 
 const TicketDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ const TicketDetails = () => {
   useEffect(() => {
     dispatch(fetchTicketDetails(id));
     
-    // Admins need access to user management list to pull active agents for assignment
     if (user?.role === 'admin') {
       dispatch(fetchAllUsers());
     }
@@ -55,6 +54,19 @@ const TicketDetails = () => {
     setUpdating(false);
   };
 
+  const handleDelete = async () => {
+    if (window.confirm('Are you absolutely sure you want to permanently delete this ticket?')) {
+      setUpdating(true);
+      const resultAction = await dispatch(deleteTicket(id));
+      if (deleteTicket.fulfilled.match(resultAction)) {
+        navigate('/tickets');
+      } else {
+        setUpdating(false);
+        alert(resultAction.payload || 'Failed to delete ticket.');
+      }
+    }
+  };
+
   const handleAssignmentChange = async (e) => {
     const agentId = e.target.value;
     if (!agentId) return;
@@ -81,22 +93,31 @@ const TicketDetails = () => {
 
   if (!ticketDetails) return null;
 
-  // Filters out only administrators and agents to list inside our assignment dropdown
   const agents = users.filter((u) => u.role === 'agent' || u.role === 'admin');
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Link to="/tickets" className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-500">
-          <ArrowLeft size={16} /> Back to Tickets
-        </Link>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link to="/tickets" className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-500">
+            <ArrowLeft size={16} /> Back to Tickets
+          </Link>
+          
+          {(user?.role === 'admin' || ticketDetails.createdBy._id === user?._id) && (
+            <Link 
+              to={`/tickets/${id}/edit`} 
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-colors"
+            >
+              <Edit2 size={12} /> Edit Ticket
+            </Link>
+          )}
+        </div>
         <span className="text-sm text-gray-500 font-semibold">
           Ticket Created: {new Date(ticketDetails.createdAt).toLocaleDateString()}
         </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Details & Threaded Comments */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-8 border border-gray-100 rounded-xl shadow-xs space-y-4">
             <div className="flex items-center justify-between">
@@ -113,7 +134,6 @@ const TicketDetails = () => {
             </p>
           </div>
 
-          {/* Comments Section */}
           <div className="bg-white p-8 border border-gray-100 rounded-xl shadow-xs space-y-6">
             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
               <MessageSquare size={18} className="text-gray-500" /> Comments Thread ({ticketDetails.comments.length})
@@ -142,7 +162,6 @@ const TicketDetails = () => {
               </div>
             )}
 
-            {/* Comment Post Box */}
             <form onSubmit={handleCommentSubmit} className="pt-4 border-t border-gray-100 space-y-4">
               <textarea
                 value={commentText}
@@ -164,15 +183,12 @@ const TicketDetails = () => {
           </div>
         </div>
 
-        {/* Right Column: Control Panel & Status History Timeline */}
         <div className="space-y-6">
-          {/* Action/Control Panel */}
           <div className="bg-white p-6 border border-gray-100 rounded-xl shadow-xs space-y-6">
             <h3 className="text-md font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
               <CheckCircle size={16} className="text-indigo-600" /> Actions Panel
             </h3>
 
-            {/* Change Status Dropdown (Admins & Assigned Agent Only) */}
             {(user?.role === 'admin' || (user?.role === 'agent' && ticketDetails.assignedTo?._id === user?._id)) ? (
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Update Status</label>
@@ -197,7 +213,6 @@ const TicketDetails = () => {
               </div>
             )}
 
-            {/* Assign Agent Dropdown (Admin Only) */}
             {user?.role === 'admin' ? (
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Assign Ticket</label>
@@ -224,7 +239,6 @@ const TicketDetails = () => {
               </div>
             )}
 
-            {/* Ticket Info Metadata */}
             <div className="space-y-4 pt-4 border-t border-gray-100 text-xs font-semibold text-gray-600">
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
@@ -241,7 +255,17 @@ const TicketDetails = () => {
             </div>
           </div>
 
-          {/* Historical Log: Status Change History */}
+          {user?.role === 'admin' && (
+           <button
+             type="button"
+             onClick={handleDelete}
+             disabled={updating}
+             className="w-full mt-4 flex items-center justify-center gap-2 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition-colors border border-red-200 disabled:opacity-50"
+           >
+             <Trash2 size={14} /> Delete Support Ticket
+           </button>
+         )}
+
           <div className="bg-white p-6 border border-gray-100 rounded-xl shadow-xs space-y-4">
             <h3 className="text-md font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
               <Clock size={16} className="text-slate-500" /> Status Log

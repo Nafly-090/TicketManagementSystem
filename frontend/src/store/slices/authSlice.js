@@ -5,7 +5,6 @@ import API from '../../api/axios';
 export const login = createAsyncThunk('auth/login', async (credentials, thunkAPI) => {
   try {
     const response = await API.post('/auth/login', credentials);
-    // Persist login data in local storage
     localStorage.setItem('user', JSON.stringify(response.data.data));
     return response.data.data;
   } catch (error) {
@@ -51,7 +50,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Login actions
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
@@ -64,7 +62,6 @@ const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      // Register actions
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
       })

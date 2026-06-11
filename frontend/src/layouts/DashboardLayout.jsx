@@ -34,7 +34,6 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
-      {/* Mobile Sidebar overlay */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 z-40 bg-gray-600/70 lg:hidden"
@@ -42,7 +41,6 @@ const DashboardLayout = () => {
         />
       )}
 
-      {/* Sidebar Container */}
       <aside className={`fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-slate-900 border-r border-slate-800 transition-transform lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center justify-between h-16 px-6 bg-slate-950 border-b border-slate-850">
           <Link to="/dashboard" className="text-xl font-bold text-white tracking-wider">
@@ -53,7 +51,6 @@ const DashboardLayout = () => {
           </button>
         </div>
 
-        {/* Dynamic Nav Link Group */}
         <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -72,7 +69,6 @@ const DashboardLayout = () => {
           })}
         </nav>
 
-        {/* User profile details and Logout */}
         <div className="p-4 bg-slate-950 border-t border-slate-850">
           <div className="mb-4">
             <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
@@ -88,7 +84,6 @@ const DashboardLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Top Navbar Header */}
         <header className="flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200">
@@ -102,7 +97,6 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        {/* Dynamic Nested Screen Content */}
         <main className="flex-1 p-6 overflow-y-auto">
           <Outlet />
         </main>
