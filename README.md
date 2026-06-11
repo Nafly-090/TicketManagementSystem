@@ -68,7 +68,7 @@ managed via Redux Toolkit:
 | :-------- | :-------------------------------------------------------------- | :---------------------------------------------------------------------- | :--------------------------------------------- | :----------------------------------------------------- |
 | **Admin** | Full system metrics, real-time activity logs, visual charts.    | Read all, update metadata, assign agents, patch status, delete tickets. | Post replies to any ticket comments section.   | Create, Read, Update, Delete (CRUD) any user accounts. |
 | **Agent** | Target workload cards, resolution percentage ring indicators.   | Read only assigned tickets, patch status transitions.                   | Post replies strictly to assigned tickets.     | Read profile.                                          |
-| **User**  | Rapid submission panel, support queue status list, Portal FAQs. | Create tickets, view only self-submitted tickets, edit metadata.        | Post replies strictly to self-created tickets. | Register, log in,                   |
+| **User**  | Rapid submission panel, support queue status list, Portal FAQs. | Create tickets, view only self-submitted tickets, edit metadata.        | Post replies strictly to self-created tickets. | Register, log in,                                      |
 
 📂 Project Directory Structure
 
