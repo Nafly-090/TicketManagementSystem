@@ -68,7 +68,7 @@ managed via Redux Toolkit:
 | :-------- | :-------------------------------------------------------------- | :---------------------------------------------------------------------- | :--------------------------------------------- | :----------------------------------------------------- |
 | **Admin** | Full system metrics, real-time activity logs, visual charts.    | Read all, update metadata, assign agents, patch status, delete tickets. | Post replies to any ticket comments section.   | Create, Read, Update, Delete (CRUD) any user accounts. |
 | **Agent** | Target workload cards, resolution percentage ring indicators.   | Read only assigned tickets, patch status transitions.                   | Post replies strictly to assigned tickets.     | Read profile.                                          |
-| **User**  | Rapid submission panel, support queue status list, Portal FAQs. | Create tickets, view only self-submitted tickets, edit metadata.        | Post replies strictly to self-created tickets. | Register, log in,                                      |
+| **User**  | Rapid submission panel, support queue status list, Portal FAQs. | Create tickets, view only self-submitted tickets, edit metadata.        | Post replies strictly to self-created tickets. | Register, log in                                       |
 
 📂 Project Directory Structure
 
@@ -101,6 +101,7 @@ TicketManagementSystem/
     │   └── main.jsx         # React bootstrapping file
     ├── vite.config.js       # Vite compiler plugin configurations (Tailwind v4 native plugin)
     ├── .env                 # Frontend local variables configuration
+    ├── .env.example         # Template for environment configuration
     └── package.json         # Frontend package lists and scripts
 
 🛠️ Local Installation & Setup Guide
@@ -343,30 +344,29 @@ signups, please use these pre-registered test accounts:
 
 🌍 Production Deployment Guide
 
-Backend Deployment (Render or Railway)
+Backend Deployment (Vercel Serverless)
 
-1.  Register on Render.
-2.  Create a new Web Service and link your Git repository.
-3.  Set your Root Directory to backend (if in a monorepo).
-4.  Configure your environment variables in their dashboard settings panel:
-      - MONGODB_URI (Atlas database string)
-      - JWT_SECRET (Cryptographic key)
-      - NODE_ENV=production
-      - FRONTEND_URL (Your final deployed Vercel URL)
-5.  Set your build commands:
-      - Build: npm install
-      - Start Command: node server.js
+1. Register/Login on Vercel.
+2. Click Add New > Project and import your Git repository.
+3. Set the Root Directory to backend.
+4. Configure your Environment Variables in the Vercel dashboard:
+    MONGODB_URI (Atlas connection string)
+    JWT_SECRET (Cryptographic key)
+    NODE_ENV=production
+    FRONTEND_URL (Your final deployed Netlify URL)
+5. Click Deploy. Vercel will build and host your Express API as a serverless service.
 
-Frontend Deployment (Vercel)
+Frontend Deployment (Netlify)
 
-1.  Register on Vercel.
-2.  Create a new project and import your Git repository.
-3.  Set your Root Directory to frontend.
-4.  Configure your environment variables:
-      - VITE_API_URL (Your final deployed backend API Gateway URL, e.g.
-        https://your-app.onrender.com/api)
-5.  Deploy. Vercel automatically reads the Vite setup and publishes your
-    application globally.
+1. Register/Login on Netlify.
+2. Click Add new site > Import an existing project and link your Git repository.
+3. Set the Base directory to frontend.
+4. Set your build configurations:
+    Build command: npm run build
+    Publish directory: frontend/dist
+5. Click Add environment variables and insert your backend API link:
+    VITE_API_URL (Your live Vercel backend URL, e.g. https://your-backend.vercel.app/api)
+6. Click Deploy site. Netlify will compile your Vite project and host it globally.
 
 🛡️ License
 
@@ -375,7 +375,3 @@ Full-Stack Task evaluation. All codebase layouts, decoupled service patterns,
 and custom responsive canvas sequences are strictly owned by AJ NAFLAN and
 licensed under the MIT License.
 
-
----
-
-This `README.md` is complete, professional, and provides the examiner with everything they need to evaluate your project. Let me know if you are ready to wrap up your final step—**Step B: Central Backend Error Handling Middleware**—or if you have any questions!
