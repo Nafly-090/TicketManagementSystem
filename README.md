@@ -9,8 +9,8 @@ Developed as a highly structured, scalable, production-ready showcase of modern 
 
 ## 🚀 Live Deployment Links
 
-*   **Frontend Live Application (Vercel):** `https://your-frontend-deployed-url.vercel.app` 
-*   **Backend API Gateway (Render/Railway):** `https://your-backend-api-gateway.onrender.com`
+*   **Frontend Live Application (Netlify):** `https://tmsqtechy.netlify.app` 
+*   **Backend API Gateway (Vercel):** `https://tms-backend-qtechy.vercel.app`
 *   **Database Cluster:** Cloud MongoDB Atlas (Connected)
 
 ---
