@@ -11,6 +11,15 @@ const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 app.use(express.json());
 
+
+// Base Route for a friendly api gateway status check
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "QTechy Ticket Management System API Gateway is active and running."
+  });
+});
+
 // Main Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
